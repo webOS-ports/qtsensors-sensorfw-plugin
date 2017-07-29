@@ -1,8 +1,7 @@
 TARGET = qtsensors_sensorfw
-QT = core sensors network dbus
+QT = core sensors-private network dbus
 
 include(sensorfw.pri)
-
 
 CONFIG += link_pkgconfig
 PKGCONFIG += sensord-qt5
