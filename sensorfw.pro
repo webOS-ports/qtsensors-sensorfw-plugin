@@ -3,6 +3,18 @@ QT = core sensors-private network dbus
 
 include(sensorfw.pri)
 
+enable-qcom-bsp {
+    DEFINES += QCOM_BSP
+}
+
+enable-qti-bsp {
+    DEFINES += QTI_BSP
+}
+
+enable-qcom-hardware {
+    DEFINES += QCOM_HARDWARE
+}
+
 CONFIG += link_pkgconfig
 PKGCONFIG += sensord-qt5
 
