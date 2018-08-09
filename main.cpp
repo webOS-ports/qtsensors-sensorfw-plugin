@@ -48,6 +48,7 @@
 #include "sensorfwtapsensor.h"
 #include "sensorfwgyroscope.h"
 #include "sensorfwlightsensor.h"
+#include "sensorfwlidsensor.h"
 
 #include <QtSensors/qsensorplugin.h>
 #include <QtSensors/qsensorbackend.h>
@@ -63,7 +64,7 @@ class sensorfwSensorPlugin : public QObject, public QSensorPluginInterface, publ
 
 public:
 
-    void registerSensors()
+    void registerSensors() override
     {
         // if no default - no support either, uses Sensors.conf
         QSettings settings(QSettings::SystemScope, QLatin1String("QtProject"), QLatin1String("Sensors"));
@@ -77,7 +78,7 @@ public:
     }
 
 
-    QSensorBackend *createBackend(QSensor *sensor)
+    QSensorBackend *createBackend(QSensor *sensor) override
     {
         if (sensor->identifier() == sensorfwaccelerometer::id)
             return new sensorfwaccelerometer(sensor);
@@ -97,6 +98,8 @@ public:
             return new SensorfwTapSensor(sensor);
         if (sensor->identifier() == SensorfwGyroscope::id)
             return new SensorfwGyroscope(sensor);
+        if (sensor->identifier() == SensorfwLidSensor::id)
+            return new SensorfwLidSensor(sensor);
         if (sensor->identifier() == SensorfwLightSensor::id)
             return new SensorfwLightSensor(sensor);
         if (sensor->identifier() == SensorfwIrProximitySensor::id)
