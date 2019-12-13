@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2016 The Qt Company Ltd.
+** Copyright (C) 2016 Canonical, Ltd
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the QtSensors module of the Qt Toolkit.
@@ -37,37 +37,55 @@
 **
 ****************************************************************************/
 
-#ifndef SENSORFWPROXIMITYSENSOR_H
-#define SENSORFWPROXIMITYSENSOR_H
+#include "sensorfwlidsensor.h"
 
-#include "sensorfwsensorbase.h"
-#include <QtSensors/qproximitysensor.h>
+char const * const SensorfwLidSensor::id("sensorfw.lidsensor");
 
-#include <proximitysensor_i.h>
-
-
-
-class SensorfwProximitySensor : public SensorfwSensorBase
+SensorfwLidSensor::SensorfwLidSensor(QSensor *sensor)
+    : SensorfwSensorBase(sensor)
+    , m_initDone(false)
 {
-    Q_OBJECT
+    init();
+    setReading<QLidReading>(&m_reading);
+    sensor->setDataRate(10);//set a default rate
+}
 
-public:
-    static char const * const id;
-    SensorfwProximitySensor(QSensor *sensor);
-protected:
-    bool doConnect() override;
-    QString sensorName() const override;
-    void start() override;
-    virtual void init();
+void SensorfwLidSensor::slotDataAvailable(const LidData& data)
+{
+    switch (data.type_) {
+    case data.BackLid:
+        m_reading.setBackLidClosed(data.value_);
+        break;
+    case data.FrontLid:
+        m_reading.setFrontLidClosed(data.value_);
+        break;
+    };
 
-private:
-    QProximityReading m_reading;
-    bool m_initDone;
-    bool m_exClose;
-    bool firstRun;
+    m_reading.setTimestamp(data.timestamp_);
+    newReadingAvailable();
+}
 
-private slots:
-    void slotReflectanceDataAvailable(const Proximity& data);
-};
+bool SensorfwLidSensor::doConnect()
+{
+    Q_ASSERT(m_sensorInterface);
+    return QObject::connect(m_sensorInterface, SIGNAL(lidChanged(LidData)),
+                            this, SLOT(slotDataAvailable(LidData)));
+}
 
-#endif
+QString SensorfwLidSensor::sensorName() const
+{
+    return "lidsensor";
+}
+
+void SensorfwLidSensor::init()
+{
+    m_initDone = false;
+    initSensor<LidSensorChannelInterface>(m_initDone);
+}
+
+void SensorfwLidSensor::start()
+{
+    if (reinitIsNeeded)
+        init();
+    SensorfwSensorBase::start();
+}

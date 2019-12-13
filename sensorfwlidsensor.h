@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2016 The Qt Company Ltd.
+** Copyright (C) 2016 Canonical, Ltd
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the QtSensors module of the Qt Toolkit.
@@ -37,37 +37,34 @@
 **
 ****************************************************************************/
 
-#ifndef SENSORFWPROXIMITYSENSOR_H
-#define SENSORFWPROXIMITYSENSOR_H
+
+#ifndef SENSORFWLIDSENSOR_H
+#define SENSORFWLIDSENSOR_H
 
 #include "sensorfwsensorbase.h"
-#include <QtSensors/qproximitysensor.h>
+#include <QtSensors/qlidsensor.h>
 
-#include <proximitysensor_i.h>
+#include <lidsensor_i.h>
+#include <liddata.h>
 
 
-
-class SensorfwProximitySensor : public SensorfwSensorBase
+class SensorfwLidSensor : public SensorfwSensorBase
 {
     Q_OBJECT
 
 public:
     static char const * const id;
-    SensorfwProximitySensor(QSensor *sensor);
+    SensorfwLidSensor(QSensor *sensor);
 protected:
     bool doConnect() override;
     QString sensorName() const override;
     void start() override;
     virtual void init();
-
 private:
-    QProximityReading m_reading;
+    QLidReading m_reading;
     bool m_initDone;
-    bool m_exClose;
-    bool firstRun;
-
 private slots:
-    void slotReflectanceDataAvailable(const Proximity& data);
+    void slotDataAvailable(const LidData& data);
 };
 
 #endif
