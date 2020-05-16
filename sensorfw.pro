@@ -3,7 +3,8 @@ QT = core sensors-private network dbus
 
 include(sensorfw.pri)
 
-QMAKE_USE += sensorfw
+CONFIG += link_pkgconfig
+PKGCONFIG += sensord-qt5
 
 CONFIGFILES.files = Sensors.conf
 CONFIGFILES.path = /etc/xdg/QtProject/
