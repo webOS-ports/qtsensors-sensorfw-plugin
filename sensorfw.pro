@@ -4,7 +4,7 @@ QT = core sensors-private network dbus
 include(sensorfw.pri)
 
 CONFIG += link_pkgconfig
-PKGCONFIG += sensord-qt5
+PKGCONFIG += sensord-qt$${QT_MAJOR_VERSION}
 
 CONFIGFILES.files = Sensors.conf
 CONFIGFILES.path = /etc/xdg/QtProject/
