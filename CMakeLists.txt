@@ -34,5 +34,5 @@ target_link_libraries(qtsensors_sensorfw PUBLIC
 )
 
 install(TARGETS qtsensors_sensorfw
-        LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}/qt6/plugins/sensors/)
+        LIBRARY DESTINATION ${INSTALL_PLUGINSDIR}/sensors/)
 install(FILES Sensors.conf DESTINATION /etc/xdg/QtProject/)
