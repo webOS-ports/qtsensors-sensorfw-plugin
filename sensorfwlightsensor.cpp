@@ -44,4 +44,15 @@ void SensorfwLightSensor::start()
     if (reinitIsNeeded)
         init();
     SensorfwSensorBase::start();
+    // sensorfwd's ALS channel only passes a value on when it differs from
+    // the last one it sent, so a client that starts while the light is
+    // steady gets no reading until it changes. Some ALS drivers report only
+    // on change as well. Publish the channel's current value straight away,
+    // as the ambient light and proximity backends do.
+    if (auto *als = qobject_cast<ALSSensorChannelInterface*>(m_sensorInterface)) {
+        const Unsigned data(als->lux());
+        m_reading.setLux(data.x());
+        m_reading.setTimestamp(data.UnsignedData().timestamp_);
+        newReadingAvailable();
+    }
 }
